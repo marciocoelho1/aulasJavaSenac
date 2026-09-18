@@ -1,15 +1,15 @@
-# Projeto Loja - Aulas Java SENAC
+# Projeto Loja - Aulas de Java SENAC
 
-Aplicação Web desenvolvida com **Java 17** e **Spring Boot** para gerenciamento de loja, incluindo listagem de funcionários e cadastro de produtos com persistência em banco de dados H2.
+Aplicação Web desenvolvida com **Java** e **Spring Boot** para gerenciamento de produtos (CRUD completo), integrada com a camada de acesso a dados DAO (`JdbcTemplate`), banco de dados H2 e uma interface HTML/JavaScript interativa com Bootstrap.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Java 17**
+- **Java 17+**
 - **Spring Boot** (Spring Web MVC, Spring JDBC)
-- **H2 Database** (Banco de dados de arquivo)
-- **JSP (JavaServer Pages) & JSTL**
+- **H2 Database** (Banco de Dados relacional em arquivo)
+- **Bootstrap 5** & **JavaScript (Fetch API)**
 - **Maven**
 
 ---
@@ -17,39 +17,38 @@ Aplicação Web desenvolvida com **Java 17** e **Spring Boot** para gerenciament
 ## 📁 Estrutura do Projeto
 
 - `src/main/java/br/com/loja/`
-  - **`controller/`**: Endpoints REST e Controllers das visões (`FuncionarioController`, `ProdutoController`).
-  - **`dao/`**: Camada de acesso a dados usando `JdbcTemplate` (`ProdutoDao`).
-  - **`model/`**: Classes de modelo (`Funcionario`, `Produto`).
+  - **`controller/`**: [ProdutoController.java](src/main/java/br/com/loja/controller/ProdutoController.java) - Endpoints REST da aplicação (`GET`, `POST`, `PUT`, `DELETE`).
+  - **`dao/`**: [ProdutoDao.java](src/main/java/br/com/loja/dao/ProdutoDao.java) - Camada de Acesso a Dados utilizando `JdbcTemplate`.
+  - **`model/`**: [Produto.java](src/main/java/br/com/loja/model/Produto.java) - Modelo representando o Produto (`id`, `nome`, `preco`).
 - `src/main/resources/`
-  - **`schema.sql`**: Script de criação das tabelas no banco de dados H2.
-  - **`static/cadastro.html`**: Formulário estático HTML para inclusão de produtos.
-- `src/main/webapp/WEB-INF/jsp/`
-  - **`funcionarios.jsp`**, **`produtos.jsp`**: Páginas de visualização dos dados.
+  - **`schema.sql`**: Script de criação da tabela no banco de dados H2 com Chave Primária (`PRIMARY KEY`).
+  - **`static/cadastro.html`**: Interface gráfica com menu suspenso para executar as operações de **Cadastrar**, **Listar**, **Atualizar** e **Excluir**.
 
 ---
 
-## 🚀 Endpoints da Aplicação
+## 🚀 Endpoints da API REST (`/api/produtos`)
 
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
-| `GET` | `/funcionarios` | Renderiza a página JSP com a listagem de funcionários |
-| `POST` | `/api/produtos` | Cadastra um novo produto no banco de dados com validações de nome e preço |
-| `GET` | `/cadastro.html` | Página estática para formulário de cadastro |
+| `POST` | `/api/produtos` | Cadastra um novo produto |
+| `GET` | `/api/produtos` | Retorna a lista de todos os produtos cadastrados |
+| `PUT` | `/api/produtos/{id}` | Atualiza o produto com o `ID` especificado |
+| `DELETE` | `/api/produtos/{id}` | Remove o produto com o `ID` especificado |
 
 ---
 
 ## ⚙️ Como Executar o Projeto
 
-1. Certifique-se de ter o Java 17 (ou superior) instalado.
+1. Certifique-se de ter o **Java 17** (ou superior) instalado.
 2. Clone o repositório:
    ```bash
    git clone https://github.com/marciocoelho1/aulasJavaSenac.git
    ```
 3. Navegue até o diretório do projeto:
    ```bash
-   cd aulasJavaSenac
+   cd loja
    ```
-4. Execute o projeto usando Maven Wrapper:
+4. Execute o projeto usando o Maven Wrapper:
    - **Windows**:
      ```cmd
      mvnw.cmd spring-boot:run
@@ -58,6 +57,5 @@ Aplicação Web desenvolvida com **Java 17** e **Spring Boot** para gerenciament
      ```bash
      ./mvnw spring-boot:run
      ```
-5. Acesse no navegador:
-   - Lista de Funcionários: `http://localhost:8080/funcionarios`
-   - Cadastro de Produtos: `http://localhost:8080/cadastro.html`
+5. Acesse no seu navegador a página principal de gerenciamento:
+   - **`http://localhost:8080/cadastro.html`**
