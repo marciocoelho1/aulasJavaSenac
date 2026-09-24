@@ -24,6 +24,10 @@ public class Produto {
     @Column(nullable = false, length = 255)
     private String descricao;
 
+    @ManyToOne
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private Categoria categoria;
+
     public Produto(){}
     public Produto(Long id, Integer quantidade, String nome, BigDecimal preco, String descricao) {
         this.id = id;
@@ -71,5 +75,13 @@ public class Produto {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 }
