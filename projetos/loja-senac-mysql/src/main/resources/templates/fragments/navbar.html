@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" th:href="@{/produtos}">Loja Senac</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#menuPrincipal" aria-controls="menuPrincipal"
+                aria-expanded="false" aria-label="Abrir navegação">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/produtos}">Produtos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/categorias}">Categorias</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

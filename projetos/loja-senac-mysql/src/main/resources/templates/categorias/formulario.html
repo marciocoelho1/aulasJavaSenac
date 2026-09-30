@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${categoria.id == null ? 'Nova categoria' : 'Editar categoria'} + ' | Loja Senac'"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/estilos.css}" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="mb-4">
+                <h1 class="h3 mb-1" th:text="${categoria.id == null ? 'Nova categoria' : 'Editar categoria'}"></h1>
+                <p class="text-secondary mb-0">Preencha os dados da categoria.</p>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form th:action="@{/categorias/salvar}" th:object="${categoria}" method="post">
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="mb-3">
+                            <label class="form-label" for="nome">Nome</label>
+                            <input id="nome" class="form-control"
+                                   th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'"
+                                   type="text" th:field="*{nome}" maxlength="80" autofocus>
+                            <div class="invalid-feedback" th:errors="*{nome}"></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="descricao">Descrição</label>
+                            <textarea id="descricao" class="form-control" rows="3"
+                                      th:classappend="${#fields.hasErrors('descricao')} ? 'is-invalid'"
+                                      th:field="*{descricao}" maxlength="255"></textarea>
+                            <div class="invalid-feedback" th:errors="*{descricao}"></div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-success" type="submit">Salvar</button>
+                            <a class="btn btn-outline-secondary" th:href="@{/categorias}">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
