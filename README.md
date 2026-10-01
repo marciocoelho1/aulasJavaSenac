@@ -1,32 +1,128 @@
-# Aulas de Java SENAC
+# Projeto Loja — Aulas de Java SENAC
 
-Repositório de estudos e projetos desenvolvidos nas aulas de Java do SENAC. O conteúdo registra a evolução da aplicação de catálogo, dos primeiros exercícios com JDBC e API REST até o uso de Spring Boot, JPA, Thymeleaf e MySQL.
+Aplicação desenvolvida nas aulas de Java do SENAC para acompanhar a evolução de um sistema de catálogo: dos fundamentos de JDBC e API REST até persistência com Spring Data JPA, relacionamentos entre entidades, páginas Thymeleaf e objetos DTO.
 
-## Projeto atual: Loja Senac
+---
 
-A versão mais completa da aplicação está em [`projetos/loja-senac-mysql`](projetos/loja-senac-mysql/README.md). Ela permite cadastrar e manter produtos e categorias, com validação de formulários e relacionamento entre as entidades.
+## Tecnologias utilizadas
 
-O código das aulas anteriores permanece na raiz para consulta e comparação entre as etapas. O histórico Git também registra as mudanças realizadas ao longo das aulas.
-
-## Tecnologias estudadas
-
-- Java e Maven;
-- Spring Boot e Spring MVC;
-- JDBC e Spring Data JPA;
-- Hibernate e mapeamento objeto-relacional;
-- MySQL;
+- Java 17;
+- Spring Boot, Spring MVC e Spring Data JPA;
+- Hibernate e Jakarta Validation;
+- MySQL 8;
 - Thymeleaf, HTML, CSS e Bootstrap;
-- APIs REST e operações CRUD.
+- Maven e Maven Wrapper.
 
-## Executar o projeto atual
+---
 
-Consulte o [README do projeto Loja Senac](projetos/loja-senac-mysql/README.md) para requisitos, configuração do MySQL, comandos de execução e rotas disponíveis.
+## Linha do tempo e evolução por aulas
 
-## Organização
+O projeto reúne os conceitos praticados em etapas diferentes da disciplina. A aplicação atual combina essas etapas em uma estrutura única, na raiz do repositório.
+
+### Aula 1 (16/09/2026) — Configuração inicial, JDBC e API REST
+
+- Configuração inicial do Spring Web e da conexão com banco de dados;
+- Introdução a `DataSource`, `JdbcTemplate`, SQL e ao padrão DAO;
+- Primeiras rotas REST para cadastrar e listar produtos.
+
+### Aula 2 (18/09/2026) — CRUD e interface de gestão
+
+- Operações de criação, consulta, atualização e exclusão;
+- Consumo de rotas REST pelo navegador;
+- Construção de uma interface de gestão para os produtos.
+
+### Aula 3 (21/09/2026) — Spring Data JPA e MySQL
+
+- Migração da persistência manual para JPA e Hibernate;
+- Mapeamento da entidade `Produto` e configuração do MySQL;
+- Uso dos repositórios Spring Data para consultar e persistir dados.
+
+### Aula 4 (23/09/2026) — Relacionamentos e páginas com Thymeleaf
+
+- Criação da entidade `Categoria` e relacionamento com `Produto` (`@ManyToOne` e `@OneToMany`);
+- Repositórios e serviços para organizar o acesso aos dados e as regras da aplicação;
+- Formulários e listagens renderizados no servidor com Thymeleaf;
+- Validação dos dados e carga inicial de categorias.
+
+### Continuação — DTOs e integração das interfaces
+
+- O pacote `dto` define os dados recebidos e enviados pela API sem expor diretamente as entidades JPA;
+- `ProdutoRequest` valida os dados de entrada e `ProdutoResponse` representa a resposta, incluindo os dados da categoria;
+- `api.ProdutoController` disponibiliza consulta e cadastro de produtos em `/api/produtos`;
+- `controller.ProdutoController` e `CategoriaController` atendem as páginas HTML em `/produtos` e `/categorias`;
+- As duas interfaces compartilham serviços e repositórios, relacionando o exercício inicial de API REST às camadas de persistência e apresentação estudadas depois.
+
+---
+
+## Funcionalidades atuais
+
+- Cadastro, edição, listagem e exclusão de produtos pela interface web;
+- Cadastro, edição, listagem e exclusão de categorias;
+- Associação de produtos a categorias;
+- Validação de formulários, mensagens de retorno e proteção contra exclusão de categorias utilizadas;
+- Consulta e cadastro de produtos pela API REST;
+- Criação automática das tabelas pelo Hibernate e carga inicial das categorias Informática e Escritório.
+
+## Rotas
+
+Com a aplicação em execução na porta `8080`:
+
+| Rota | Método | Uso |
+|---|---|---|
+| `/produtos` | GET | Lista os produtos na interface web |
+| `/produtos/novo` | GET | Abre o formulário de produto |
+| `/categorias` | GET | Lista as categorias na interface web |
+| `/categorias/nova` | GET | Abre o formulário de categoria |
+| `/api/produtos` | GET | Retorna os produtos em JSON |
+| `/api/produtos/{id}` | GET | Retorna um produto em JSON |
+| `/api/produtos` | POST | Cadastra um produto a partir de JSON |
+
+## Como executar
+
+### Requisitos
+
+- JDK 17 ou superior;
+- Docker Desktop com Docker Compose, ou uma instalação local do MySQL 8.
+
+### Banco com Docker
+
+O `docker-compose.yml` inicia o MySQL 8.4 na porta `3306`, com banco `loja_senac`, usuário `root` e senha `root`:
+
+```bash
+docker compose up -d
+```
+
+A configuração padrão em `src/main/resources/application.properties` aponta para `localhost:3307` e senha vazia. Para usar o container acima, defina as configurações Spring antes de iniciar.
+
+PowerShell:
+
+```powershell
+$env:SPRING_DATASOURCE_URL = "jdbc:mysql://localhost:3306/loja_senac"
+$env:SPRING_DATASOURCE_PASSWORD = "root"
+.\mvnw.cmd spring-boot:run
+```
+
+Para uma instalação local, ajuste URL, usuário e senha em `application.properties`. O arquivo `banco.sql` cria o banco; as tabelas são geradas pelo Hibernate.
+
+### Abrir no IntelliJ IDEA
+
+1. Abra a pasta do repositório no IntelliJ IDEA e importe o `pom.xml`.
+2. Inicie o MySQL e configure a conexão.
+3. Execute `br.com.senac.loja.LojaApplication`.
+4. Acesse <http://localhost:8080>.
+
+## Estrutura do projeto
 
 ```text
-.
-├── src/                         # Etapas anteriores trabalhadas nas aulas
-└── projetos/
-    └── loja-senac-mysql/        # Versão atual da aplicação
+src/main/java/br/com/senac/loja/
+├── api/          # API REST
+├── config/       # Carga inicial
+├── controller/   # Páginas web MVC
+├── dto/          # Contratos de entrada e saída da API
+├── form/         # Dados e validação dos formulários
+├── model/        # Entidades Produto e Categoria
+├── repository/   # Repositórios Spring Data JPA
+└── service/      # Regras da aplicação
 ```
+
+Para fins didáticos, `spring.jpa.hibernate.ddl-auto=update` mantém o esquema alinhado às entidades. Em projetos de produção, alterações de esquema costumam ser controladas por ferramentas de migração.
