@@ -48,9 +48,22 @@ O projeto reúne os conceitos praticados em etapas diferentes da disciplina. A a
 
 - O pacote `dto` define os dados recebidos e enviados pela API sem expor diretamente as entidades JPA;
 - `ProdutoRequest` valida os dados de entrada e `ProdutoResponse` representa a resposta, incluindo os dados da categoria;
-- `api.ProdutoController` disponibiliza consulta e cadastro de produtos em `/api/produtos`;
+- `api.ProdutoApiController` disponibiliza consulta e cadastro de produtos em `/api/produtos`;
 - `controller.ProdutoController` e `CategoriaController` atendem as páginas HTML em `/produtos` e `/categorias`;
 - As duas interfaces compartilham serviços e repositórios, relacionando o exercício inicial de API REST às camadas de persistência e apresentação estudadas depois.
+
+---
+
+### Continuação (02/10/2026) — CRUD completo na API e integração com frontend
+
+- Renomeação do controlador REST para `ProdutoApiController`, distinguindo-o do controlador das páginas Thymeleaf;
+- Atualização de produtos com `PUT /api/produtos/{id}` e exclusão com `DELETE /api/produtos/{id}`, com resposta `204 No Content` na exclusão;
+- Uso de `ProdutoRequest`, `ProdutoResponse` e `CategoriaResponse` para transportar e validar dados;
+- Introdução ao tratamento de erros com `ProblemDetail` em `ApiExceptionHandler`;
+- Introdução à configuração de CORS para o frontend em `http://localhost:4200`;
+- Execução do MySQL 8.4 com Docker Compose, volume persistente e verificação de saúde.
+
+Pontos para revisar na continuidade da aula: o `ApiExceptionHandler` está limitado ao pacote `br.com.senac.loja.controller.api`, enquanto o controlador REST está em `br.com.senac.loja.api`; o padrão CORS `/api**` precisa ser ajustado para `/api/**` para abranger as rotas de produtos. Essas configurações ainda precisam de validação integrada com o frontend.
 
 ---
 
@@ -60,7 +73,7 @@ O projeto reúne os conceitos praticados em etapas diferentes da disciplina. A a
 - Cadastro, edição, listagem e exclusão de categorias;
 - Associação de produtos a categorias;
 - Validação de formulários, mensagens de retorno e proteção contra exclusão de categorias utilizadas;
-- Consulta e cadastro de produtos pela API REST;
+- Consulta, cadastro, atualização e exclusão de produtos pela API REST;
 - Criação automática das tabelas pelo Hibernate e carga inicial das categorias Informática e Escritório.
 
 ## Rotas
@@ -76,6 +89,8 @@ Com a aplicação em execução na porta `8080`:
 | `/api/produtos` | GET | Retorna os produtos em JSON |
 | `/api/produtos/{id}` | GET | Retorna um produto em JSON |
 | `/api/produtos` | POST | Cadastra um produto a partir de JSON |
+| `/api/produtos/{id}` | PUT | Atualiza um produto a partir de JSON |
+| `/api/produtos/{id}` | DELETE | Exclui um produto e retorna 204 |
 
 ## Como executar
 
@@ -84,13 +99,23 @@ Com a aplicação em execução na porta `8080`:
 - JDK 17 ou superior;
 - Docker Desktop com Docker Compose, ou uma instalação local do MySQL 8.
 
+### Obter o projeto
+
+```bash
+git clone https://github.com/marciocoelho1/aulasJavaSenac.git
+cd aulasJavaSenac
+```
+
 ### Banco com Docker
 
 O `docker-compose.yml` inicia o MySQL 8.4 na porta `3306`, com banco `loja_senac`, usuário `root` e senha `root`:
 
 ```bash
 docker compose up -d
+docker compose ps
 ```
+
+O serviço `mysql` usa o container `loja-senac-mysql`, persiste os dados no volume `loja_senac_mysql_data` e verifica a disponibilidade com `mysqladmin ping`. Aguarde o estado `healthy` antes de iniciar a aplicação. A porta `3306` precisa estar livre. Para parar os serviços mantendo os dados, execute `docker compose down`.
 
 A configuração padrão em `src/main/resources/application.properties` aponta para `localhost:3307` e senha vazia. Para usar o container acima, defina as configurações Spring antes de iniciar.
 
@@ -98,6 +123,7 @@ PowerShell:
 
 ```powershell
 $env:SPRING_DATASOURCE_URL = "jdbc:mysql://localhost:3306/loja_senac"
+$env:SPRING_DATASOURCE_USERNAME = "root"
 $env:SPRING_DATASOURCE_PASSWORD = "root"
 .\mvnw.cmd spring-boot:run
 ```
@@ -116,7 +142,7 @@ Para uma instalação local, ajuste URL, usuário e senha em `application.proper
 ```text
 src/main/java/br/com/senac/loja/
 ├── api/          # API REST
-├── config/       # Carga inicial
+├── config/       # Carga inicial e configuração de CORS
 ├── controller/   # Páginas web MVC
 ├── dto/          # Contratos de entrada e saída da API
 ├── form/         # Dados e validação dos formulários

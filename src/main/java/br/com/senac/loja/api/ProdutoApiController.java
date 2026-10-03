@@ -1,11 +1,13 @@
 package br.com.senac.loja.api;
 
+import br.com.senac.loja.controller.ProdutoController;
 import br.com.senac.loja.dto.ProdutoRequest;
 import br.com.senac.loja.dto.ProdutoResponse;
 import br.com.senac.loja.form.ProdutoForm;
 import br.com.senac.loja.model.Produto;
 import br.com.senac.loja.service.ProdutoService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +16,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/produtos")
-public class ProdutoController {
+public class ProdutoApiController {
 
     private final ProdutoService produtoService;
 
-    public ProdutoController(ProdutoService produtoService){
+    public ProdutoApiController(ProdutoService produtoService){
         this.produtoService = produtoService;
     }
 
@@ -37,10 +39,29 @@ public class ProdutoController {
             @Valid @RequestBody ProdutoRequest request){
 
         Produto produto = produtoService.salvar(converterParaForm(null, request));
+
         ProdutoResponse response = ProdutoResponse.from(produto);
 
         return ResponseEntity.created(URI.create("/api/produtos/" + produto.getId())).body(response);
     }
+
+    @PutMapping("/{id}")
+    public ProdutoResponse atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody ProdutoRequest request
+    ){
+        Produto produto = produtoService.salvar(converterParaForm(id, request));
+
+        return ProdutoResponse.from(produto);
+    };
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluir(@PathVariable Long id){
+        produtoService.excluir(id);
+    }
+
+
 
     private ProdutoForm converterParaForm (Long id, ProdutoRequest produtoRequest){
         ProdutoForm form = new ProdutoForm();
