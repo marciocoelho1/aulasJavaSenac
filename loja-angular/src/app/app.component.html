@@ -1,0 +1,22 @@
+<main class="container">
+    <h1>Loja Senac</h1>
+
+    @if (mensagem){
+        <div class="mensagem sucesso">
+            {{mensagem}}
+        </div>
+    }
+
+    @if (erro){
+        <div class="mensagem erro">{{erro}}</div>
+    }
+
+    <section class="card">
+        <h2>
+            {{produtoEditandoId == null ? 'Novo produto' : 'Editar produto' }}
+        </h2>
+
+        <form [formGroup]="formulario" (ngSubmit)="salvar()">
+        </form>
+    </section>
+</main>
