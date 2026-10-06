@@ -67,6 +67,17 @@ Pontos para revisar na continuidade da aula: o `ApiExceptionHandler` está limit
 
 ---
 
+### Continuação (05/10/2026) — Frontend Angular para gestão de produtos
+
+- Criação do projeto `loja-angular/` com Angular e TypeScript;
+- Uso de formulários reativos para cadastrar e editar produtos;
+- Organização dos modelos de produto e categoria em `src/app/models/` e da comunicação com a API em `src/app/services/`;
+- Integração planejada com a API REST em `http://localhost:8080/api/produtos`, com o frontend servido em `http://localhost:4200`.
+
+Para executar o frontend, acesse `loja-angular/`, instale as dependências com `npm install` e inicie com `npm start`. A integração completa depende da API Java e da configuração CORS descrita acima.
+
+---
+
 ## Funcionalidades atuais
 
 - Cadastro, edição, listagem e exclusão de produtos pela interface web;
